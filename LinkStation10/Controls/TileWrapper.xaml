@@ -1,0 +1,41 @@
+<UserControl x:Class="RMEGo.Sunflower.LinkStation10.Controls.TileWrapper"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:RMEGo.Sunflower.LinkStation10.Controls"
+             mc:Ignorable="d"
+             Height="52" d:DesignWidth="300" DataContext="{Binding Source={StaticResource Locator}}" x:Name="body">
+    <UserControl.Resources>
+        <Storyboard x:Key="popout">
+            <DoubleAnimation Duration="0:0:0.6" Storyboard.TargetName="body" Storyboard.TargetProperty="Width" From="10" To="400">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.5" Storyboard.TargetName="body" Storyboard.TargetProperty="Opacity" From="0" To="1">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="popin">
+            <DoubleAnimation Duration="0:0:0.5" Storyboard.TargetName="body" Storyboard.TargetProperty="Width" To="0">
+                <DoubleAnimation.EasingFunction>
+                    <QuinticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Duration="0:0:0.7" Storyboard.TargetName="body" Storyboard.TargetProperty="Opacity" To="0">
+                <DoubleAnimation.EasingFunction>
+                    <QuinticEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </UserControl.Resources>
+    <DockPanel LastChildFill="True" Background="{Binding Config.Theme.BackgroundBrush, Mode=OneWay}">
+        <Grid HorizontalAlignment="Left" Width="15" Background="{Binding Config.Theme.SideIndicatorBrush, Mode=OneWay}" MouseUp="Grid_MouseUp"/>
+        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+        </StackPanel>
+    </DockPanel>
+</UserControl>
