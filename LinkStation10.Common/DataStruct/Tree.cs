@@ -37,7 +37,7 @@ namespace RMEGo.Sunflower.LinkStation10.Common
                 {
                     return null;
                 }
-                var result = from e in this.SubNode where e.Name.Equals(name, StringComparison.OrdinalIgnoreCase) select e;
+                var result = from e in this.SubNode where e.Name != null && e.Name.Equals(name, StringComparison.OrdinalIgnoreCase) select e;
                 if (result.Count() > 0)
                 {
                     return result.First();
@@ -55,6 +55,10 @@ namespace RMEGo.Sunflower.LinkStation10.Common
                     var node = result.First();
                     var i = this.SubNode.IndexOf(node);
                     this.SubNode[i] = value;
+                    value.SuperNode = this;
+                }
+                else {
+                    this.SubNode.Add(value);
                     value.SuperNode = this;
                 }
             }

@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RMEGo.Sunflower.LinkStation10.Common.FileTree
+namespace RMEGo.Sunflower.LinkStation10.Common
 {
     public enum ItemType
     {
         Context,
-        Entry
+        EndPoint
     }
     public struct MenuItem
     {
@@ -47,12 +47,25 @@ namespace RMEGo.Sunflower.LinkStation10.Common.FileTree
                     {
                         continue;
                     }
-                    node[dir.Name].Value = new MenuItem
+                    if (node[dir.Name] == null)
                     {
-                        Icon = GetDirIcon(dir.FullName),
-                        Name = GetDirName(dir.FullName),
-                        Type = ItemType.Context
-                    };
+                        node[dir.Name] = new Node<MenuItem>(dir.Name,
+                            new MenuItem
+                            {
+                                Icon = GetDirIcon(dir.FullName),
+                                Name = GetDirName(dir.FullName),
+                                Type = ItemType.Context
+                            });
+                    }
+                    else
+                    {
+                        node[dir.Name].Value = new MenuItem
+                        {
+                            Icon = GetDirIcon(dir.FullName),
+                            Name = GetDirName(dir.FullName),
+                            Type = ItemType.Context
+                        };
+                    }
                     FillTree(node[dir.Name], dir.FullName);
                 }
 
@@ -62,13 +75,27 @@ namespace RMEGo.Sunflower.LinkStation10.Common.FileTree
                     {
                         continue;
                     }
-                    node[file.Name].Value = new MenuItem
+                    if (node[file.Name] == null)
                     {
-                        Icon = GetFileIcon(file.FullName),
-                        Name = GetFileName(file.FullName),
-                        Type = ItemType.Entry,
-                        StartCommand = GetFileCommand(file.FullName)
-                    };
+                        node[file.Name] = new Node<MenuItem>(file.Name,
+                            new MenuItem
+                            {
+                                Icon = GetFileIcon(file.FullName),
+                                Name = GetFileName(file.FullName),
+                                Type = ItemType.EndPoint,
+                                StartCommand = GetFileCommand(file.FullName)
+                            });
+                    }
+                    else
+                    {
+                        node[file.Name].Value = new MenuItem
+                        {
+                            Icon = GetDirIcon(file.FullName),
+                            Name = GetDirName(file.FullName),
+                            Type = ItemType.EndPoint,
+                            StartCommand = GetFileCommand(file.FullName)
+                        };
+                    }
                 }
             }
         }
@@ -92,24 +119,46 @@ namespace RMEGo.Sunflower.LinkStation10.Common.FileTree
             }
         }
 
-        private static Image GetFileIcon(string filename) {
+        private static Image GetFileIcon(string filename)
+        {
             var fileinfo = new FileInfo(filename);
             var ext = fileinfo.Extension;
             return IconHandler.IconHandler.IconFromExtension(ext, IconHandler.IconSize.Large).ToBitmap();
         }
         private static string GetFileName(string filename)
         {
-            var fileinfo = new FileInfo(filename);
-            return fileinfo.Name;
+            return Path.GetFileNameWithoutExtension(filename);
         }
-        private static Image GetDirIcon(string filename) {
-            throw new NotImplementedException();
+        private static Image GetDirIcon(string filename)
+        {
+            var cached = CachedDesktopIniLoader.GetIconPathConfig(filename);
+            var index = CachedDesktopIniLoader.GetIconIndexConfig(filename);
+            if (string.IsNullOrWhiteSpace(cached))
+            {
+                return DirIcon;
+            }
+            else
+            {
+                var icon = IconHandler.IconHandler.IconFromFile(Path.Combine(filename, cached), IconHandler.IconSize.Large, index);
+                return icon.ToBitmap();
+            }
         }
-        private static string GetDirName(string filename) {
-            throw new NotImplementedException();
+        private static string GetDirName(string filename)
+        {
+            var cached = CachedDesktopIniLoader.GetLocalizedResourceNameConfig(filename);
+            if (string.IsNullOrWhiteSpace(cached))
+            {
+                var fi = new DirectoryInfo(filename);
+                return fi.Name;
+            }
+            else
+            {
+                return cached;
+            }
         }
-        private static string GetFileCommand(string filename) {
-            throw new NotImplementedException();
+        private static string GetFileCommand(string filename)
+        {
+            return filename;
         }
     }
 }
