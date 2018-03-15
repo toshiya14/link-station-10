@@ -1,4 +1,7 @@
 using GalaSoft.MvvmLight;
+using RMEGo.Sunflower.LinkStation10.Common;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RMEGo.Sunflower.LinkStation10.ViewModel
 {
@@ -16,19 +19,20 @@ namespace RMEGo.Sunflower.LinkStation10.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+        public List<MenuItem> TileList {
+            get => _tilelist;
+            set => Set(ref _tilelist, value); }
+        private List<MenuItem> _tilelist;
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
-            ////if (IsInDesignMode)
-            ////{
-            ////    // Code runs in Blend --> create design time data.
-            ////}
-            ////else
-            ////{
-            ////    // Code runs "for real"
-            ////}
+            var refpath = @"C:\Users\v-zhica\Documents\TLB\APP";
+            var ft = new FileTree().BuildFromRootFolder(refpath);
+            TileList = ft.SubNode.Select(x => x.Value).ToList();
+            
         }
     }
 }

@@ -8,7 +8,7 @@
              Height="52" d:DesignWidth="300" DataContext="{Binding Source={StaticResource Locator}}" x:Name="body">
     <UserControl.Resources>
         <Storyboard x:Key="popout">
-            <DoubleAnimation Duration="0:0:0.6" Storyboard.TargetName="body" Storyboard.TargetProperty="Width" From="10" To="400">
+            <DoubleAnimation Duration="0:0:0.6" Storyboard.TargetName="body" Storyboard.TargetProperty="Width" From="10" To="900">
                 <DoubleAnimation.EasingFunction>
                     <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
                 </DoubleAnimation.EasingFunction>
@@ -32,10 +32,19 @@
             </DoubleAnimation>
         </Storyboard>
     </UserControl.Resources>
-    <DockPanel LastChildFill="True" Background="{Binding Config.Theme.BackgroundBrush, Mode=OneWay}">
+    <DockPanel x:Name="dockPanel" LastChildFill="True" Background="{Binding Config.Theme.BackgroundBrush, Mode=OneWay}">
         <Grid HorizontalAlignment="Left" Width="15" Background="{Binding Config.Theme.SideIndicatorBrush, Mode=OneWay}" MouseUp="Grid_MouseUp"/>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-
-        </StackPanel>
+        <ItemsControl ItemsSource="{Binding Main.TileList}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel x:Name="stacks" IsItemsHost="True" Orientation="Horizontal" HorizontalAlignment="Right" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <local:TileItem ItemContent="{Binding}"></local:TileItem>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </DockPanel>
 </UserControl>

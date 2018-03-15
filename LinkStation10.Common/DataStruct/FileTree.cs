@@ -13,7 +13,7 @@ namespace RMEGo.Sunflower.LinkStation10.Common
         Context,
         EndPoint
     }
-    public struct MenuItem
+    public class MenuItem
     {
         public Image Icon;
         public string Name;
@@ -90,8 +90,8 @@ namespace RMEGo.Sunflower.LinkStation10.Common
                     {
                         node[file.Name].Value = new MenuItem
                         {
-                            Icon = GetDirIcon(file.FullName),
-                            Name = GetDirName(file.FullName),
+                            Icon = GetFileIcon(file.FullName),
+                            Name = GetFileName(file.FullName),
                             Type = ItemType.EndPoint,
                             StartCommand = GetFileCommand(file.FullName)
                         };
@@ -139,7 +139,21 @@ namespace RMEGo.Sunflower.LinkStation10.Common
             }
             else
             {
-                var icon = IconHandler.IconHandler.IconFromFile(Path.Combine(filename, cached), IconHandler.IconSize.Large, index);
+                var path = string.Empty;
+                if (Path.IsPathRooted(cached))
+                {
+                    path = Path.GetFullPath(cached);
+                }
+                else {
+                    if (cached.Contains("%"))
+                    {
+                        path = Environment.ExpandEnvironmentVariables(cached);
+                    }
+                    else {
+                        path = Path.Combine(filename, cached);
+                    }
+                }
+                var icon = IconHandler.IconHandler.IconFromFile(path, IconHandler.IconSize.Large, index);
                 return icon.ToBitmap();
             }
         }

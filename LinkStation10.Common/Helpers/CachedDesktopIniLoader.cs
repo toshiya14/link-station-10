@@ -73,7 +73,7 @@ namespace RMEGo.Sunflower.LinkStation10.Common
             try
             {
                 var parser = new IniDataParser();
-                var data = parser.Parse(File.ReadAllText(path));
+                var data = parser.Parse(File.ReadAllText(Path.Combine(path, "desktop.ini")));
                 var res = data[".ShellClassInfo"]["IconResource"];
                 var file = "";
                 var index = "";
